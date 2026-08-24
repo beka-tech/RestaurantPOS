@@ -172,3 +172,39 @@ Order
 - `Order` = whole ticket.
 - `OrderItem` = food or drink ordered.
 - `OrderItemModifier` = customization of that specific item.
+
+
+┌─────────────────┐
+│      Order      │
+│─────────────────│
+│ Id              │
+│ TableSessionId  │
+│ WaiterId        │
+│ Status          │
+└────────┬────────┘
+         │
+         │ 1 : many
+         │
+         ▼
+┌─────────────────┐          ┌─────────────────┐
+│    OrderItem    │─────────►│    MenuItem     │
+│─────────────────│  many:1  │─────────────────│
+│ Id              │          │ Id              │
+│ OrderId         │          │ Name            │
+│ MenuItemId      │          │ Price           │
+│ Quantity        │          └─────────────────┘
+│ UnitPrice       │
+└────────┬────────┘
+         │
+         │ 1 : many
+         │
+         ▼
+┌──────────────────────┐       ┌─────────────────┐
+│ OrderItemModifier    │──────►│    Modifier     │
+│──────────────────────│ many:1│─────────────────│
+│ Id                   │       │ Id              │
+│ OrderItemId          │       │ Name            │
+│ ModifierId           │       │ Price           │
+│ Name                 │       └─────────────────┘
+│ AdditionalPrice      │
+└──────────────────────┘
