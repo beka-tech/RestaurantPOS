@@ -22,3 +22,13 @@ git checkout -b feat/domain-foundation
 Push it to GitHub:
 
 git push -u origin feat/domain-foundation
+
+                    TableSession
+                         │
+        ┌────────────────┼────────────────┐
+        │                │                │
+      Orders          Payment          Receipt
+        │
+     OrderItems
+        │
+     Modifiers
