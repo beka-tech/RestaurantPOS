@@ -1,0 +1,27 @@
+# .NET build output
+**/bin/
+**/obj/
+
+# Visual Studio and VS Code local files
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Node and Angular dependencies/build output
+**/node_modules/
+**/dist/
+.angular/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Test and coverage output
+TestResults/
+coverage/
+
+# OS files
+Thumbs.db
+Desktop.ini
