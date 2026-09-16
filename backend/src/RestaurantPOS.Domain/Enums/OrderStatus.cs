@@ -7,5 +7,5 @@ public enum OrderStatus
     Preparing, // Kitchen
     Ready, // Kitchen finished
     Collected, // Waiter
-    Served, // Waiter
+    Served, // Waiter the foods
 }
