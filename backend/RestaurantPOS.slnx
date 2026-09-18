@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RestaurantPOS.Domain/RestaurantPOS.Domain.csproj" />
+    <Project Path="src/RestaurantPOS.Application/RestaurantPOS.Application.csproj" />
+    <Project Path="src/RestaurantPOS.Infrastructure/RestaurantPOS.Infrastructure.csproj" />
+    <Project Path="src/RestaurantPOS.Api/RestaurantPOS.Api.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="src/RestaurantPOS.Tests/RestaurantPOS.Tests.csproj" />
+  </Folder>
+</Solution>
