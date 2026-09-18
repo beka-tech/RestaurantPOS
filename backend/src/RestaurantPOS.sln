@@ -5,17 +5,17 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{827E0CD3-B72D-47B6-A68D-7590B98EB39B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Domain", "src\RestaurantPOS.Domain\RestaurantPOS.Domain.csproj", "{AAC259D9-A004-4723-85DA-477B03F69730}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Domain", "RestaurantPOS.Domain\RestaurantPOS.Domain.csproj", "{AAC259D9-A004-4723-85DA-477B03F69730}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Application", "src\RestaurantPOS.Application\RestaurantPOS.Application.csproj", "{59514B78-B622-4E7D-91F6-8BB0988BCC01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Application", "RestaurantPOS.Application\RestaurantPOS.Application.csproj", "{59514B78-B622-4E7D-91F6-8BB0988BCC01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Infrastructure", "src\RestaurantPOS.Infrastructure\RestaurantPOS.Infrastructure.csproj", "{F59CBF89-D5C7-46F5-915F-DCFF75CF91A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Infrastructure", "RestaurantPOS.Infrastructure\RestaurantPOS.Infrastructure.csproj", "{F59CBF89-D5C7-46F5-915F-DCFF75CF91A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Api", "src\RestaurantPOS.Api\RestaurantPOS.Api.csproj", "{B098A6B2-59FD-420F-BE7C-F9BA35E4555B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Api", "RestaurantPOS.Api\RestaurantPOS.Api.csproj", "{B098A6B2-59FD-420F-BE7C-F9BA35E4555B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0AB3BF05-4346-4AA6-1389-037BE0695223}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Tests", "tests\RestaurantPOS.Tests\RestaurantPOS.Tests.csproj", "{4AB07636-71EB-4879-8A3A-3F3E2860E66D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RestaurantPOS.Tests", "RestaurantPOS.Tests\RestaurantPOS.Tests.csproj", "{4AB07636-71EB-4879-8A3A-3F3E2860E66D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
