@@ -1,5 +1,7 @@
 # Build authentication and authorization yourself
 
+> **Status: v2 learning track. Not used in the MVP.** The MVP signs in with a JWT bearer token, a `PasswordHash` on `User` and `[Authorize(Roles = "…")]` checks, plus a one-line ownership check for waiters. See [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md#6-auth-with-jwt). Section 3 below argues against minting your own JWTs for production. That warning stands: the MVP accepts the trade-off for a single-restaurant demo (decision D-09 in [README.md](README.md#mvp-decisions-wbs-11)), and this workbook's Identity-cookie, CSRF and ABAC design is the v2 upgrade path.
+
 This workbook continues the [Application-layer guide](APPLICATION_LAYER_GUIDE.md). You implement the code; the sections below give you a design, exercises, small syntax references, and acceptance checks for ASP.NET Core Identity, RBAC, and ABAC.
 
 Your first goal: **sign in an employee and protect a manager-only menu command**. Your second goal: **allow a waiter to submit only their own draft order in their own open session**.

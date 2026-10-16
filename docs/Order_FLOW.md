@@ -1,247 +1,106 @@
-# RestaurantPOS — Order Relationships
+# Order relationships and the send-order request (MVP)
 
-## Core Relationship
+How an order and its lines fit together, and the exact steps of WBS 4.1 "send order". Modifiers are v2 (decision D-03); a free-text note per line replaces them.
+
+## 1. Core relationship
 
 ```text
-Order
+TableSession (visit)
   1
-  │
   │ has many
   ▼
   *
-OrderItem
+Order            = one kitchen ticket
   1
-  │
-  │ has many
+  │ owns (Order.Items)
   ▼
   *
-OrderItemModifier
+OrderItem        = one product on the ticket, with its price snapshot
 ```
 
-So:
+**One visit → many tickets → each ticket has many lines.**
+
+## 2. Real example
 
 ```text
-1 Order
-   └── MANY OrderItems
-
-1 OrderItem
-   └── MANY OrderItemModifiers
-```
-
----
-
-## Real Example
-
-```text
-Order #101
+Table 4 · visit opened 12:30 by waiter Abebe
 │
-├── OrderItem: Burger
-│      │
-│      ├── OrderItemModifier: Extra Cheese
-│      └── OrderItemModifier: No Onion
-│
-├── OrderItem: Pizza
-│      │
-│      └── OrderItemModifier: Extra Mushroom
-│
-└── OrderItem: Coke
+└── Order (Submitted 12:41)
+      ├── Burger  × 2   250.00   note: "no onion"    = 500.00
+      ├── Coke    × 3    40.00                       = 120.00
+      └── Coffee  × 1    35.00                       =  35.00
+                                                    --------
+                                         Order total  655.00
 ```
 
----
+The bill for the visit is the sum of all its orders' totals.
 
-## Foreign-Key Relationship
-
-### `OrderItem` points to `Order`
-
-```csharp
-public Guid OrderId { get; private set; }
-```
+## 3. Fields and keys
 
 ```text
-Order
-Id = 100
-   ▲
-   │
-   │ OrderId = 100
-   │
-OrderItem
-Id = 200
-```
-
-`OrderItem.OrderId` answers:
-
-> Which Order do I belong to?
-
----
-
-### `OrderItemModifier` points to `OrderItem`
-
-```csharp
-public Guid OrderItemId { get; private set; }
-```
-
-```text
-OrderItem
-Id = 200
-   ▲
-   │
-   │ OrderItemId = 200
-   │
-OrderItemModifier
-Id = 300
-Name = "Extra Cheese"
-```
-
-`OrderItemModifier.OrderItemId` answers:
-
-> Which ordered food does this customization belong to?
-
----
-
-## Bigger Domain Relationship
-
-```text
-                     MENU SIDE
-                         │
-                         ▼
-                    MenuItem
-                         │
-                         │ customer chooses
-                         ▼
-Order ────────────► OrderItem
-                       │
-                       │ customized using
-                       ▼
-                    Modifier
-                       │
-                       ▼
-               OrderItemModifier
-```
-
-More accurately:
-
-```text
-MenuItem
-   1
-   │
-   │ can appear in many
-   ▼
-   *
-OrderItem
-
-
-Modifier
-   1
-   │
-   │ can appear in many
-   ▼
-   *
-OrderItemModifier
-```
-
----
-
-## Complete Relationship Diagram
-
-```text
-┌─────────────────┐
-│      Order      │
-│─────────────────│
-│ Id              │
-│ TableSessionId  │
-│ WaiterId        │
-│ Status          │
-└────────┬────────┘
-         │
-         │ 1 : many
-         │
+┌──────────────────┐
+│      Order       │
+│──────────────────│
+│ ID               │
+│ TableSessionId   │──► TableSession.ID
+│ WaiterId         │──► User.ID
+│ Status           │
+│ SubmittedAt …    │
+│ ServedAt         │  (MVP)
+└────────┬─────────┘
+         │ 1 : many   (cascade delete)
          ▼
-┌─────────────────┐          ┌─────────────────┐
-│    OrderItem    │─────────►│    MenuItem     │
-│─────────────────│  many:1  │─────────────────│
-│ Id              │          │ Id              │
-│ OrderId         │          │ Name            │
-│ MenuItemId      │          │ Price           │
-│ Quantity        │          └─────────────────┘
-│ UnitPrice       │
-└────────┬────────┘
-         │
-         │ 1 : many
-         │
-         ▼
-┌──────────────────────┐       ┌─────────────────┐
-│ OrderItemModifier    │──────►│    Modifier     │
-│──────────────────────│ many:1│─────────────────│
-│ Id                   │       │ Id              │
-│ OrderItemId          │       │ Name            │
-│ ModifierId           │       │ Price           │
-│ Name                 │       └─────────────────┘
-│ AdditionalPrice      │
+┌──────────────────────┐          ┌──────────────────┐
+│      OrderItem       │          │     MenuItem     │
+│──────────────────────│  many:1  │──────────────────│
+│ ID                   │─────────►│ ID               │
+│ OrderId              │          │ Name             │
+│ MenuItemId           │          │ Price            │
+│ ItemName      (MVP)  │◄─copied──│                  │
+│ UnitPrice            │◄─copied──│                  │
+│ Quantity             │          └──────────────────┘
+│ SpecialInstructions  │
 └──────────────────────┘
 ```
 
----
+| Key | Points to | Answers |
+| --- | --- | --- |
+| `OrderItem.OrderId` | `Order.ID` | Which ticket is this line on? |
+| `OrderItem.MenuItemId` | `MenuItem.ID` | Which product was it? (Reporting only; the price comes from the snapshot) |
+| `Order.TableSessionId` | `TableSession.ID` | Which visit pays for it? |
+| `Order.WaiterId` | `User.ID` | Who sent it? |
 
-## Read the Diagram Like a Sentence
+## 4. The send-order request (WBS 4.1)
 
-```text
-Order
-  │
-  └── contains OrderItems
-
-OrderItem
-  │
-  ├── belongs to one Order
-  │
-  ├── refers to one MenuItem
-  │
-  └── contains OrderItemModifiers
-
-OrderItemModifier
-  │
-  ├── belongs to one OrderItem
-  │
-  └── refers to one Modifier
+```json
+POST /api/sessions/{visitId}/orders
+{
+  "lines": [
+    { "menuItemId": "3f6c…", "quantity": 2, "note": "no onion" },
+    { "menuItemId": "9a21…", "quantity": 3 }
+  ]
+}
 ```
 
----
+There is no price in the request. The server decides every price.
 
-## ID Connection Map
+`OrderService.SendOrderAsync` does this, in order:
 
-```text
-OrderId
-   ↓
-connects OrderItem → Order
+1. Load the visit: 404 if missing, 403 if `visit.WaiterId != me.Id`, 409 if it isn't Open.
+2. Load all requested menu items in one query; 409 if any is missing, inactive or unavailable.
+3. `var order = new Order(visit.ID, me.Id);` (match the real constructor), then per line `order.AddItem(item.ID, item.Name, item.Price, line.Quantity, line.Note)`.
+4. `order.Submit()`, which throws if there are no lines.
+5. `db.Orders.Add(order); await db.SaveChangesAsync(ct);` That's one save, so the order and all its lines are stored together or not at all.
+6. Return the order with its lines and `Total`.
 
-MenuItemId
-   ↓
-connects OrderItem → MenuItem
+A Draft order exists only in memory during this request (decision D-04).
 
-OrderItemId
-   ↓
-connects OrderItemModifier → OrderItem
-
-ModifierId
-   ↓
-connects OrderItemModifier → Modifier
-```
-
----
-
-## Quick Memory
+## 5. When modifiers come back (v2)
 
 ```text
-ORDER
-  │ 1
-  │
-  │ *
-  ▼
-ORDER ITEM
-  │ 1
-  │
-  │ *
-  ▼
-ORDER ITEM MODIFIER
+OrderItem ──1:*──► OrderItemModifier   (Name + AdditionalPrice copied from Modifier)
+
+LineTotal = (UnitPrice + Σ AdditionalPrice) × Quantity
 ```
 
-**One ticket → many foods → each food can have many customizations.**
+The tables already exist. Decide first whether a modifier is global (as in the code today) or belongs to one menu item (as the older docs drew it).
