@@ -1,5 +1,7 @@
 # Build the Application layer yourself: MediatR + CQRS
 
+> **Status: v2 learning track. Not used in the MVP.** The MVP uses one plain service per feature and `IAppDbContext` instead of MediatR handlers, repositories, a unit of work and FluentValidation. See [IMPLEMENTATION_GUIDE.md](IMPLEMENTATION_GUIDE.md). Come back to this workbook after the [demo script](BUILD_PLAN.md#definition-of-done-and-demo-script) passes; the services you write in v1 convert one-to-one into commands and queries. The defects listed in section 13 are fixed in WBS 1.2. The MVP's error mapping is in [IMPLEMENTATION_GUIDE.md §5](IMPLEMENTATION_GUIDE.md#5-errors).
+
 This is a workbook for your existing Restaurant POS project. You write the implementation; this guide gives you the order, contracts, small syntax examples, and checks for each exercise. Complete one milestone before moving to the next.
 
 Your first goal is simple: **create a menu category, then query the categories**. After that, build menu items and state-changing commands using the same pattern.
